@@ -15,9 +15,25 @@
     "target": "es5",
     "inlineSources": true
   },
-
+  "filesGlob": [
+    "./**/*.ts",
+    "!./node_modules"
+  ],
+  "atom": {
+    "rewriteTsconfig": true
+  },
   "files": [
-    "main.ts",
-    "typings.d.ts"
+    "./app/environment.ts",
+    "./app/index.ts",
+    "./app/movie-search.service.ts",
+    "./app/schedule.view.ts",
+    "./app/screening.view.ts",
+    "./app/series-list.view.ts",
+    "./app/series.view.ts",
+    "./app/shared/index.ts",
+    "./electron-main.ts",
+    "./main.ts",
+    "./system-config.ts",
+    "./typings.d.ts"
   ]
 }

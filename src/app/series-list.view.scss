@@ -1,0 +1,33 @@
+@import './google-colors';
+
+@import 'https://fonts.googleapis.com/css?family=Slabo+27px';
+
+$sidebar-width: 30%;
+
+.container {
+  margin: 0 auto;
+  width: 100%;
+
+  .sidebar {
+    width: $sidebar-width;
+    height: 100%;
+    float: left;
+
+    .series-label {
+      padding: 0.4em;
+      margin: 0.4em 0.8em;
+      background-color: $google-blue-500;
+      font-family: 'Slabo 27px';
+      font-size: 1.25em;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .content {
+    width: 100% - $sidebar-width;
+    height: 100%;
+    float: left;
+  }
+}

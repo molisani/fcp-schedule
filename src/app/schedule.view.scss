@@ -1,0 +1,36 @@
+@import './google-colors';
+
+@import 'https://fonts.googleapis.com/css?family=Roboto+Condensed|Roboto:500';
+
+.semester-field {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 2em;
+  margin: 0.25em 0.5em;
+  border-bottom: 2px solid;
+  &:focus {
+    background-color: $google-grey-50;
+  }
+}
+
+.frame {
+
+}
+
+.header {
+  background-color: $google-grey-50;
+}
+
+.tab {
+  display: inline-block;
+  line-height: 1.25em;
+  margin: 0.5em 0 0 0.75em;
+  padding: 0.25em 0.5em;
+  background-color: $google-grey-200;
+  font-family: 'Roboto Condensed', sans-serif;
+  color: $google-grey-900;
+}
+
+.content {
+
+}

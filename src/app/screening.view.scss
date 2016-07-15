@@ -1,0 +1,19 @@
+@import './google-colors';
+
+@import 'https://fonts.googleapis.com/css?family=Roboto+Slab:Roboto+Mono';
+
+.screening {
+  border: 1px solid;
+
+  .title {
+    display: inline-block;
+    width: 100%;
+    font-family: 'Roboto Slab';
+    font-size: 1.1em;
+  }
+
+  .info {
+    font-family: 'Roboto Mono';
+    font-size: 0.75em;
+  }
+}

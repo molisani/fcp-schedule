@@ -1,0 +1,47 @@
+@import './google-colors';
+
+@import 'https://fonts.googleapis.com/css?family=Roboto:500|Roboto+Mono';
+
+.series-title-field {
+  width: 14em;
+  font-family: 'Roboto';
+  font-weight: 500;
+  font-size: 1.5em;
+  border-bottom: 2px solid;
+  &:focus {
+    background-color: $google-grey-50;
+  }
+}
+
+.series-curator {
+  display: inline-block;
+  font-family: 'Roboto';
+  font-weight: 500;
+
+  input {
+    width: 10em;
+    border-bottom: 1px solid;
+
+    &:focus {
+      background-color: $google-grey-50;
+    }
+  }
+}
+
+.weekday-input {
+  display: inline-block;
+
+  .button {
+    display: inline-block;
+    text-align: center;
+    width: 1em;
+    margin: 0.2em;
+    padding: 0.2em;
+    background-color: $google-grey-200;
+    font-family: 'Roboto Mono';
+
+    &.active {
+      background-color: $google-grey-600;
+    }
+  }
+}
