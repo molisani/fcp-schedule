@@ -1,4 +1,4 @@
-import { Component, Input, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { SeriesListView } from './series-list.view';
 import { Series } from './series.view';
 
@@ -38,7 +38,7 @@ export interface Position {
   `
 })
 export class ScheduleView implements OnInit {
-  @Input() public schedule: Schedule;
+  public schedule: Schedule;
   private active_series: Series;
   private display_info: boolean = false;
   constructor(zone: NgZone) {

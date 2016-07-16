@@ -11,8 +11,8 @@ let currentFile: string;
 
 function createMenu(): Electron.Menu {
   let main = new Menu();
-  let fileMenu = new Menu();
-  let newFile = new MenuItem({
+  let scheduleMenu = new Menu();
+  let newSchedule = new MenuItem({
     label: 'New',
     accelerator: 'CmdOrCtrl+N',
     click(item, focusedWindow) {
@@ -25,7 +25,7 @@ function createMenu(): Electron.Menu {
       currentFile = undefined;
     }
   });
-  fileMenu.append(newFile);
+  scheduleMenu.append(newSchedule);
   let open = new MenuItem({
     label: 'Open',
     accelerator: 'CmdOrCtrl+O',
@@ -48,7 +48,31 @@ function createMenu(): Electron.Menu {
       }
     }
   });
-  fileMenu.append(open);
+  scheduleMenu.append(open);
+  let merge = new MenuItem({
+    label: 'Merge',
+    accelerator: 'CmdOrCtrl+M',
+    click(item, focusedWindow) {
+      if (focusedWindow) {
+        dialog.showOpenDialog(focusedWindow, {
+          filters: [{ name: 'Schedules', extensions: ['json']}],
+          properties: ['openFile'],
+        }, (filenames: string[]) => {
+          if (filenames && filenames[0]) {
+            fs.readFile(filenames[0], 'utf8', (err, data) => {
+              if (err) throw err;
+              let new_schedule: Schedule = JSON.parse(data);
+              getCurrentSchedule((schedule) => {
+                schedule.series = schedule.series.concat(new_schedule.series);
+                mainWindow.webContents.send('open-schedule', schedule);
+              });
+            });
+          }
+        });
+      }
+    }
+  });
+  scheduleMenu.append(merge);
   save = new MenuItem({
     label: 'Save',
     enabled: false,
@@ -65,7 +89,7 @@ function createMenu(): Electron.Menu {
       }
     }
   });
-  fileMenu.append(save);
+  scheduleMenu.append(save);
   let saveAs = new MenuItem({
     label: 'Save As...',
     accelerator: 'CmdOrCtrl+Shift+S',
@@ -85,11 +109,40 @@ function createMenu(): Electron.Menu {
       }
     }
   });
-  fileMenu.append(saveAs);
+  scheduleMenu.append(saveAs);
   main.append(new MenuItem({
     label: 'Schedule',
-    submenu: fileMenu
-  }))
+    submenu: scheduleMenu
+  }));
+  let generateMenu = new Menu();
+  let poster = new MenuItem({
+    label: 'Poster',
+    accelerator: 'CmdOrCtrl+P',
+    click(item, focusedWindow) {
+      console.log('not yet')
+    }
+  });
+  generateMenu.append(poster);
+  let brochure = new MenuItem({
+    label: 'Brochure',
+    accelerator: 'CmdOrCtrl+B',
+    click(item, focusedWindow) {
+      if (focusedWindow) {
+        dialog.showSaveDialog(focusedWindow, {
+          filters: [{ name: 'PDF', extensions: ['pdf']}],
+        }, (filename: string) => {
+          if (filename) {
+            renderBrochure(filename);
+          }
+        });
+      }
+    }
+  });
+  generateMenu.append(brochure);
+  main.append(new MenuItem({
+    label: 'Generate',
+    submenu: generateMenu,
+  }));
   return main;
 }
 
@@ -116,13 +169,44 @@ function createWindow() {
   });
 };
 
-ipcMain.on('render-poster', (event: any, schedule: Schedule, start_date: Date, weeks: number) => {
+function renderPoster(filename: string, schedule: Schedule, start_date: Date, weeks: number) {
 
-});
+};
 
-ipcMain.on('render-brochure', (event: any, schedule: Schedule) => {
-
-});
+function renderBrochure(filename: string) {
+  getCurrentSchedule((schedule) => {
+    let brochureWindow = new BrowserWindow({height: 777, width: 1022, show: false});
+    brochureWindow.webContents.openDevTools();
+    brochureWindow.setMenu(null);
+    brochureWindow.loadURL(`file://${__dirname}/brochure.html`);
+    ipcMain.once('brochure-angular-up', () => {
+      brochureWindow.show();
+      brochureWindow.webContents.send('open-schedule', schedule);
+    });
+    ipcMain.once('brochure-ready', () => {
+      brochureWindow.webContents.printToPDF({
+        marginsType: 1,
+        printBackground: true,
+        printSelectionOnly: false,
+        landscape: true,
+        pageSize: 'Letter',
+      }, (err, data) => {
+        if (err) throw err;
+        fs.writeFile(filename, data, (err) => {
+          if (err) throw err;
+          console.log('Write PDF successfully.');
+          dialog.showMessageBox({
+            type: 'info',
+            title: 'PDF Saved',
+            message: 'Brochure rendered and saved to file.',
+            buttons: ['OK'],
+          });
+          // brochureWindow.close();
+        });
+      });
+    });
+  });
+};
 
 app.on('ready', createWindow);
 

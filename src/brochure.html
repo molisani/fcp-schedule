@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>FCP Scheduler</title>
+  <title>Brochure Renderer</title>
   <base href=".">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,16 +11,17 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
-  <schedule-view>Loading...</schedule-view>
+  <brochure-renderer>Loading...</brochure-renderer>
 
 
 
-    {{#each scripts.polyfills}}
-    <script src="{{.}}"></script>
-    {{/each}}
+    <script src="vendor/es6-shim/es6-shim.js"></script>
+    <script src="vendor/reflect-metadata/Reflect.js"></script>
+    <script src="vendor/systemjs/dist/system.src.js"></script>
+    <script src="vendor/zone.js/dist/zone.js"></script>
     <script>
       System.import('system-config.js').then(function () {
-        System.import('main');
+        System.import('brochure.js');
       }).catch(console.error.bind(console));
     </script>
 

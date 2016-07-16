@@ -1,0 +1,45 @@
+<div *ngIf="schedule" style="font-size: 0; width: 100%">
+
+  <template ngFor let-series [ngForOf]="schedule.series">
+
+    <div *ngIf="series.brochure" class="column">
+      <div class="header">
+        <div class="title">
+          {{series.title}}
+        </div>
+        <div class="subtitle">
+          {{series.weekday}}s - <span class="curator">{{series.curator}}</span>
+        </div>
+      </div>
+      <div class="body">
+
+        <div class="screening" *ngFor="let screening of series.screenings">
+          <div class="film-info">
+            <div class="title">
+              {{screening.film.title}}<span *ngIf="screening.classic"> ©</span>
+            </div>
+            <div class="year">
+              ({{screening.film.year}})
+            </div>
+            <div class="director">
+              {{screening.film.director}}
+            </div>
+            <div class="date">
+              {{screening.date}}
+            </div>
+          </div>
+
+
+        </div>
+
+      </div>
+    </div>
+
+  </template>
+
+  <div class="column">
+
+  </div>
+
+
+</div>
