@@ -1,0 +1,73 @@
+@import '../google-colors';
+
+$scale: 1 / 0.9155;
+
+.poster {
+  padding: (1in * $scale) (1.25in * $scale);
+  width: 27in * $scale;
+  height: 40in * $scale;
+  background-color: #FFF;
+
+  .title {
+    font-family: 'Roboto Slab';
+    font-size: 2.25in;
+    text-align: center;
+    color: #FFF;
+    background-color: #000;
+    padding-bottom: 0.15in;
+  }
+
+  .subtitle {
+    font-size: 1.5in;
+    font-family: 'Roboto Condensed';
+    text-align: center;
+    letter-spacing: 0.75in;
+  }
+
+  .weekday {
+    display: inline-block;
+    width: calc(100% / 7);
+    text-align: center;
+    color: #FFF;
+    background-color: #000;
+    font-family: 'Roboto Mono';
+    font-size: 1.5in;
+    font-weight: bold;
+  }
+
+  .screening {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    width: calc(100% / 7);
+    font-size: 0.25in;
+    margin-top: 0.25in;
+    margin-bottom: 0.6in;
+
+    .date {
+      font-family: 'Roboto Condensed';
+      font-size: 0.5in;
+      font-weight: bold;
+      margin-left: 0.25in;
+    }
+
+    .time {
+      position: absolute;
+      font-family: 'Roboto Condensed';
+      font-size: 0.5in;
+      top: 0;
+      right: 0.2in;
+    }
+
+    .poster-img {
+      width: 100%;
+    }
+  }
+
+}
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact;
+  }
+}

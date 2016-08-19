@@ -1,15 +1,16 @@
 @import './google-colors';
 
-@import 'https://fonts.googleapis.com/css?family=Roboto:500|Roboto+Mono';
-
 .series-title-field {
   width: 14em;
   font-family: 'Roboto';
   font-weight: 500;
   font-size: 1.5em;
   border-bottom: 2px solid;
+
+  transition: background-color 100ms;
+  background-color: rgba($google-grey-100, 0.5);
   &:focus {
-    background-color: $google-grey-50;
+    background-color: $google-grey-300;
   }
 }
 
@@ -22,8 +23,10 @@
     width: 10em;
     border-bottom: 1px solid;
 
+    transition: background-color 100ms;
+    background-color: rgba($google-grey-100, 0.5);
     &:focus {
-      background-color: $google-grey-50;
+      background-color: $google-grey-300;
     }
   }
 }
@@ -37,11 +40,12 @@
     width: 1em;
     margin: 0.2em;
     padding: 0.2em;
-    background-color: $google-grey-200;
     font-family: 'Roboto Mono';
-
+    cursor: pointer;
+    transition: background-color 100ms;
+    background-color: rgba($google-grey-100, 0.5);
     &.active {
-      background-color: $google-grey-600;
+      background-color: $google-grey-500;
     }
   }
 }

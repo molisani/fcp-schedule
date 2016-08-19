@@ -1,33 +1,59 @@
 @import './google-colors';
 
-@import 'https://fonts.googleapis.com/css?family=Slabo+27px';
-
-$sidebar-width: 30%;
 
 .container {
-  margin: 0 auto;
+  display: table;
   width: 100%;
 
-  .sidebar {
-    width: $sidebar-width;
+  .sidenav {
+    display: table-cell;
+    width: 25vw;
     height: 100%;
-    float: left;
 
-    .series-label {
-      padding: 0.4em;
-      margin: 0.4em 0.8em;
-      background-color: $google-blue-500;
-      font-family: 'Slabo 27px';
-      font-size: 1.25em;
+    .title {
+      overflow-y: hidden;
+      transition: color 100ms, font-size 100ms;
+      transition-timing-function: ease;
+      font-weight: bold;
+      cursor: pointer;
       &:hover {
-        cursor: pointer;
+        color: $google-teal-800;
       }
+      &.selected {
+        font-size: 1.25em;
+        color: $google-teal;
+      }
+    }
+
+    .subtitle {
+      overflow-y: hidden;
+    }
+
+    .remove-series {
+      display: inline-block;
+      font-family: 'Roboto Mono';
+      background-color: $google-red;
+      padding: 0.3em 0.5em 0.4em;
+      margin-left: 2em;
+      color: #FFFFFF;
+      border-radius: 10%;
+      cursor: pointer;
+    }
+
+    .insert-btn {
+      display: inline-block;
+      font-family: 'Roboto Mono';
+      border-radius: 0.2em;
+      padding: 0.3em 0.5em 0.4em;
+      margin-left: 0.5em;
+      background-color: $google-green;
+      color: #FFFFFF;
+      cursor: pointer;
     }
   }
 
   .content {
-    width: 100% - $sidebar-width;
-    height: 100%;
-    float: left;
+    height: calc(100vh - 73px);
+    overflow-y: scroll;
   }
 }

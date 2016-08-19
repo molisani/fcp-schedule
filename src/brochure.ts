@@ -18,27 +18,31 @@ if (environment.production) {
 })
 export class BrochureRenderer implements OnInit, AfterViewChecked {
   public schedule: Schedule;
-  private finishedRendering = false;
+  public revision: string;
+  private finishedUpdating = false;
   constructor(zone: NgZone) {
-    ipcRenderer.on('open-schedule', (event: any, schedule: Schedule) => {
+    let today = new Date();
+    this.revision = `${today.getMonth()}/${today.getDate()}/${today.getFullYear()} rev`;
+    ipcRenderer.on('+view:open-schedule', (event: any, schedule: Schedule) => {
       zone.run(() => {
         this.schedule = schedule;
+        this.finishedUpdating = true;
       });
     });
   }
   ngOnInit() {
-    ipcRenderer.send('brochure-angular-up');
+    ipcRenderer.send('+main:brochure-angular-up');
   }
   ngAfterViewChecked() {
-    if (this.schedule && !this.finishedRendering) {
+    if (this.schedule && this.finishedUpdating) {
       setTimeout(() => {
-        ipcRenderer.send('brochure-ready');
-        this.finishedRendering = true;
+        ipcRenderer.send('+main:brochure-ready');
+        this.finishedUpdating = false;
+        console.log(this.schedule);
       }, 0);
     }
   }
 }
-
 
 
 bootstrap(BrochureRenderer);

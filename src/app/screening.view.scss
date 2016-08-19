@@ -1,19 +1,128 @@
 @import './google-colors';
 
-@import 'https://fonts.googleapis.com/css?family=Roboto+Slab:Roboto+Mono';
-
 .screening {
-  border: 1px solid;
-
-  .title {
-    display: inline-block;
-    width: 100%;
-    font-family: 'Roboto Slab';
-    font-size: 1.1em;
-  }
+  padding: calc(0.5em - 2px);
+  margin: 0.5em 0.5em 0.5em 0;
+  border: 2px solid $google-grey-400;
+  position: relative;
 
   .info {
+    display: inline-block;
+    width: calc(100% - 10em);
     font-family: 'Roboto Mono';
-    font-size: 0.75em;
+
+    input {
+      transition: background-color 100ms;
+      background-color: rgba($google-grey-100, 0.5);
+      &:focus {
+        background-color: $google-grey-300;
+      }
+    }
+
+    .title {
+      display: inline-block;
+      width: calc(100% - 3em);
+      font-family: 'Roboto Slab';
+      font-size: 1.5em;
+    }
+
+    .year {
+      display: inline-block;
+      font-size: 0.75em;
+      input {
+        width: 3.8em;
+      }
+    }
+
+    .director {
+      font-size: 0.75em;
+      margin-bottom: 0.5em;
+      input {
+        width: calc(100% - 7.2em);
+        border-bottom: 1px solid;
+      }
+    }
+
+    .runtime {
+      display: inline-block;
+      font-size: 0.75em;
+      margin-bottom: 0.5em;
+      input {
+        width: 3.25em;
+      }
+    }
+
+    .options {
+      display: inline-block;
+      float: right;
+      font-size: 0.75em;
+      div {
+        display: inline-block;
+      }
+    }
+
+    .poster-url {
+      font-size: 0.75em;
+      input {
+        width: calc(100% - 4.8em);
+        border-bottom: 1px solid;
+      }
+    }
+
+    .spacer {
+      margin-top: 1em;
+    }
+
+    .date {
+      text-align: center;
+      * {
+        display: inline-block;
+      }
+      .btn {
+        font-weight: bold;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+      input {
+        width: 7.5em;
+        text-align: center;
+        border-bottom: 1px solid;
+      }
+    }
+
+    .time {
+      text-align: center;
+      input {
+        font-size: 1.5em;
+        width: 3em;
+        text-align: center;
+        border-bottom: 1px solid;
+      }
+    }
+  }
+
+  .poster {
+    display: inline-block;
+    width: 9.75em;
+    height: 16em;
+    vertical-align: top;
+
+    img {
+      width: 9.75em;
+    }
+  }
+
+  .auto-fill-btn {
+    display: inline-block;
+    bottom: 0.7vw;
+    position: absolute;
+    background-color: $google-light-blue-500;
+    border-radius: 0.3em;
+    padding: 0.3em 0.6em;
+    font-size: 1em;
+    font-family: 'Roboto Mono';
+    color: white;
+    cursor: pointer;
   }
 }

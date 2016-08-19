@@ -15,6 +15,10 @@
     "target": "es5",
     "inlineSources": true
   },
+  "angularCompilerOptions": {
+    "genDir": ".",
+    "debug": true
+  },
   "filesGlob": [
     "./**/*.ts",
     "!./node_modules"
@@ -24,17 +28,19 @@
   },
   "files": [
     "./app/environment.ts",
+    "./app/fcp.module.ts",
     "./app/index.ts",
     "./app/movie-search.service.ts",
-    "./app/renderers/brochure.renderer.ts",
+    "./app/personnel.view.ts",
+    "./app/program-info.view.ts",
     "./app/schedule.view.ts",
     "./app/screening.view.ts",
     "./app/series-list.view.ts",
     "./app/series.view.ts",
-    "./app/shared/index.ts",
     "./brochure.ts",
     "./electron-main.ts",
     "./main.ts",
+    "./poster.ts",
     "./system-config.ts",
     "./typings.d.ts"
   ]

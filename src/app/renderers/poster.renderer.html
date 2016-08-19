@@ -1,0 +1,29 @@
+<div *ngIf="schedule" style="font-size: 0; width: 100%">
+
+  <div class="poster">
+
+    <div class="title">FILM CULTURE SCHEDULE</div>
+
+    <div class="subtitle">{{month_str}} {{year}}</div>
+
+    <div class="weekday">SUN</div>
+    <div class="weekday">MON</div>
+    <div class="weekday">TUE</div>
+    <div class="weekday">WED</div>
+    <div class="weekday">THU</div>
+    <div class="weekday">FRI</div>
+    <div class="weekday">SAT</div>
+
+    <template ngFor let-screening [ngForOf]="screenings" let-i="index">
+      {{i}}
+      <div *ngIf="screening" class="screening">
+        <div class="date">{{screening.date}}</div>
+        <div class="time">{{screening.time | time12H}}</div>
+        <img class="poster-img" src="{{screening.film.posterURL}}">
+      </div>
+      <div *ngIf="!screening" class="screening"></div>
+    </template>
+
+  </div>
+
+</div>

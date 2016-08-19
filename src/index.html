@@ -6,14 +6,12 @@
   <base href=".">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="./reset.css">
-  <link rel="stylesheet" href="./fonts/google-fonts.css">
+  <link rel="stylesheet" type="text/css" href="./reset.css">
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Oswald:300,400,700|Roboto+Condensed:300,700|Roboto+Mono|Roboto+Slab|Roboto:400,500">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
   <schedule-view>Loading...</schedule-view>
-
-
 
     {{#each scripts.polyfills}}
     <script src="{{.}}"></script>
@@ -23,8 +21,6 @@
         System.import('main');
       }).catch(console.error.bind(console));
     </script>
-
-
 
 </body>
 </html>

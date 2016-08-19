@@ -1,13 +1,43 @@
 import { app, BrowserWindow, ipcMain, Menu, MenuItem, dialog } from 'electron';
 
+import * as os from 'os';
 import * as fs from 'fs';
 import * as path from 'path';
 
 import { Schedule } from './app/schedule.view';
 
+const MICRONS_PER_INCH = 25400;
+
 let mainWindow: Electron.BrowserWindow;
 let save: Electron.MenuItem;
 let currentFile: string;
+
+
+function createNewSchedule() {
+  let schedule: Schedule = { semester: '', series: [] };
+  mainWindow.webContents.send('+view:open-schedule', schedule);
+  save.enabled = false;
+  currentFile = undefined;
+};
+
+function openScheduleFromFile(window: Electron.BrowserWindow) {
+  if (window) {
+    dialog.showOpenDialog(window, {
+      filters: [{ name: 'Schedules', extensions: ['json']}],
+      properties: ['openFile'],
+    }, (filenames: string[]) => {
+      if (filenames && filenames[0]) {
+        fs.readFile(filenames[0], 'utf8', (err, data) => {
+          if (err) throw err;
+          let schedule = JSON.parse(data);
+          mainWindow.webContents.send('+view:open-schedule', schedule);
+          save.enabled = true;
+          currentFile = filenames[0];
+        });
+      }
+    });
+  }
+}
 
 function createMenu(): Electron.Menu {
   let main = new Menu();
@@ -15,38 +45,13 @@ function createMenu(): Electron.Menu {
   let newSchedule = new MenuItem({
     label: 'New',
     accelerator: 'CmdOrCtrl+N',
-    click(item, focusedWindow) {
-      let schedule: Schedule = {
-        semester: 'New Semester',
-        series: [],
-      };
-      mainWindow.webContents.send('open-schedule', schedule);
-      save.enabled = false;
-      currentFile = undefined;
-    }
+    click(item, focusedWindow) { createNewSchedule(); }
   });
   scheduleMenu.append(newSchedule);
   let open = new MenuItem({
     label: 'Open',
     accelerator: 'CmdOrCtrl+O',
-    click(item, focusedWindow) {
-      if (focusedWindow) {
-        dialog.showOpenDialog(focusedWindow, {
-          filters: [{ name: 'Schedules', extensions: ['json']}],
-          properties: ['openFile'],
-        }, (filenames: string[]) => {
-          if (filenames && filenames[0]) {
-            fs.readFile(filenames[0], 'utf8', (err, data) => {
-              if (err) throw err;
-              let schedule = JSON.parse(data);
-              mainWindow.webContents.send('open-schedule', schedule);
-              save.enabled = true;
-              currentFile = filenames[0];
-            });
-          }
-        });
-      }
-    }
+    click(item, focusedWindow) { openScheduleFromFile(focusedWindow); }
   });
   scheduleMenu.append(open);
   let merge = new MenuItem({
@@ -81,7 +86,7 @@ function createMenu(): Electron.Menu {
       if (focusedWindow) {
         getCurrentSchedule((schedule) => {
           if (currentFile) {
-            fs.writeFile(currentFile, JSON.stringify(schedule), 'utf8', (err) => {
+            fs.writeFile(currentFile, JSON.stringify(schedule, null, 2), 'utf8', (err) => {
               if (err) throw err;
             });
           }
@@ -100,7 +105,7 @@ function createMenu(): Electron.Menu {
             filters: [{ name: 'Schedules', extensions: ['json']}],
           }, (filename: string) => {
             if (filename) {
-              fs.writeFile(filename, JSON.stringify(schedule), 'utf8', (err) => {
+              fs.writeFile(filename, JSON.stringify(schedule, null, 2), 'utf8', (err) => {
                 if (err) throw err;
               });
             }
@@ -115,12 +120,59 @@ function createMenu(): Electron.Menu {
     submenu: scheduleMenu
   }));
   let generateMenu = new Menu();
+  let posterWrapper = (window: Electron.BrowserWindow, month: number) => {
+    dialog.showSaveDialog(window, {
+      filters: [{ name: 'PDF', extensions: ['pdf']}],
+    }, (filename: string) => {
+      if (filename) {
+        renderPoster(filename, month);
+      }
+    });
+  };
   let poster = new MenuItem({
     label: 'Poster',
-    accelerator: 'CmdOrCtrl+P',
-    click(item, focusedWindow) {
-      console.log('not yet')
-    }
+    submenu: [
+      {
+        label: 'August', accelerator: 'F8',
+        click(item, focusedWindow) { posterWrapper(focusedWindow, 7); }
+      },
+      {
+        label: 'September', accelerator: 'F9',
+        click(item, focusedWindow) { posterWrapper(focusedWindow, 8); }
+      },
+      {
+        label: 'October', accelerator: 'F10',
+        click(item, focusedWindow) { posterWrapper(focusedWindow, 9); }
+      },
+      {
+        label: 'November', accelerator: 'F11',
+        click(item, focusedWindow) { posterWrapper(focusedWindow, 10); }
+      },
+      {
+        label: 'December', accelerator: 'F12',
+        click(item, focusedWindow) { posterWrapper(focusedWindow, 11); }
+      },
+      {
+        label: 'January', accelerator: 'F1',
+        click(item, focusedWindow) { posterWrapper(focusedWindow, 0); }
+      },
+      {
+        label: 'February', accelerator: 'F2',
+        click(item, focusedWindow) { posterWrapper(focusedWindow, 1); }
+      },
+      {
+        label: 'March', accelerator: 'F3',
+        click(item, focusedWindow) { posterWrapper(focusedWindow, 2); }
+      },
+      {
+        label: 'April', accelerator: 'F4',
+        click(item, focusedWindow) { posterWrapper(focusedWindow, 3); }
+      },
+      {
+        label: 'May', accelerator: 'F5',
+        click(item, focusedWindow) { posterWrapper(focusedWindow, 4); }
+      },
+    ]
   });
   generateMenu.append(poster);
   let brochure = new MenuItem({
@@ -148,42 +200,103 @@ function createMenu(): Electron.Menu {
 
 function getCurrentSchedule(callback: (schedule: Schedule) => void) {
   if (mainWindow) {
-    ipcMain.once('get-schedule', (event: any, schedule: Schedule) => {
+    ipcMain.once('+main:get-schedule', (event: any, schedule: Schedule) => {
       callback(schedule);
     });
-    mainWindow.webContents.send('request-schedule');
+    mainWindow.webContents.send('+view:request-schedule');
   }
 }
 
 function createWindow() {
   mainWindow = new BrowserWindow({height: 650, width: 900, show: false});
+  //mainWindow.webContents.openDevTools();
   mainWindow.loadURL(`file://${__dirname}/index.html`);
-  mainWindow.setMenu(createMenu());
-  mainWindow.webContents.openDevTools();
-  ipcMain.once('angular-up', () => {
+  if (process.platform === 'darwin') {
+    Menu.setApplicationMenu(createMenu());
+  } else {
+    mainWindow.setMenu(createMenu());
+  }
+  ipcMain.once('+main:angular-up', () => {
     mainWindow.show();
     // mainWindow.maximize();
   });
+  ipcMain.on('+main:new-schedule', () => {
+    createNewSchedule();
+  });
+  ipcMain.on('+main:open-schedule', () => {
+    openScheduleFromFile(mainWindow);
+  });
   mainWindow.on('closed', () => {
     mainWindow = null;
+    app.quit();
   });
 };
 
-function renderPoster(filename: string, schedule: Schedule, start_date: Date, weeks: number) {
+const posterPrintingSetting = {
+  pageRage: [],
+  mediaSize: {
+    width_microns: 279400 / 11 * 27,
+    height_microns: 431800 / 17 * 40,
+    name: 'NA_LEDGER',
+    custom_display_name: 'Tabloid'
+  },
+  landscape: false,
+  color: 2,
+  headerFooterEnabled: false,
+  marginsType: 1,
+  isFirstRequest: false,
+  requestID: 1234,
+  previewModifiable: true,
+  printToPDF: true,
+  printWithCloudPrint: false,
+  printWithPrivet: false,
+  printWithExtension: false,
+  deviceName: 'Save as PDF',
+  generateDraftData: true,
+  fitToPageEnabled: false,
+  duplex: 0,
+  copies: 1,
+  collate: true,
+  shouldPrintBackgrounds: false,
+  shouldPrintSelectionOnly: false
+};
 
+function renderPoster(filename: string, month: number) {
+  getCurrentSchedule((schedule) => {
+    let posterWindow = new BrowserWindow({width: 795, height: 800, show: false});
+    posterWindow.setMenu(null);
+    posterWindow.loadURL(`file://${__dirname}/poster.html`);
+    ipcMain.once('+main:poster-angular-up', () => {
+      posterWindow.webContents.send('+view:open-schedule', schedule, month);
+    });
+    ipcMain.once('+main:poster-ready', () => {
+      posterWindow.webContents['_printToPDF'](posterPrintingSetting, (err, data) => {
+        if (err) throw err;
+        fs.writeFile(filename, data, (err) => {
+          if (err) throw err;
+          console.log('Write PDF successfully.');
+          dialog.showMessageBox({
+            type: 'info',
+            title: 'PDF Saved',
+            message: 'Poster rendered and saved to file.',
+            buttons: ['OK'],
+          });
+          posterWindow.close();
+        });
+      });
+    });
+  });
 };
 
 function renderBrochure(filename: string) {
   getCurrentSchedule((schedule) => {
     let brochureWindow = new BrowserWindow({height: 777, width: 1022, show: false});
-    brochureWindow.webContents.openDevTools();
     brochureWindow.setMenu(null);
     brochureWindow.loadURL(`file://${__dirname}/brochure.html`);
-    ipcMain.once('brochure-angular-up', () => {
-      brochureWindow.show();
-      brochureWindow.webContents.send('open-schedule', schedule);
+    ipcMain.once('+main:brochure-angular-up', () => {
+      brochureWindow.webContents.send('+view:open-schedule', schedule);
     });
-    ipcMain.once('brochure-ready', () => {
+    ipcMain.once('+main:brochure-ready', () => {
       brochureWindow.webContents.printToPDF({
         marginsType: 1,
         printBackground: true,
@@ -201,7 +314,7 @@ function renderBrochure(filename: string) {
             message: 'Brochure rendered and saved to file.',
             buttons: ['OK'],
           });
-          // brochureWindow.close();
+          brochureWindow.close();
         });
       });
     });

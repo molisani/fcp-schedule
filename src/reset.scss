@@ -9,6 +9,10 @@
     outline: none;
   }
 }
+div {
+  -webkit-user-select: none;
+  cursor: default;
+}
 body {
 	line-height: 1;
 }

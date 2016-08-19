@@ -1,7 +1,5 @@
 <div *ngIf="schedule" style="font-size: 0; width: 100%">
-
   <template ngFor let-series [ngForOf]="schedule.series">
-
     <div *ngIf="series.brochure" class="column">
       <div class="header">
         <div class="title">
@@ -12,7 +10,6 @@
         </div>
       </div>
       <div class="body">
-
         <div class="screening" *ngFor="let screening of series.screenings">
           <div class="film-info">
             <div class="title">
@@ -28,18 +25,24 @@
               {{screening.date}}
             </div>
           </div>
-
-
         </div>
-
       </div>
     </div>
-
   </template>
-
   <div class="column">
-
+    <div *ngFor="let info of schedule.program_info">
+      <div class="section-title">{{info.section_title}}</div>
+      <div class="section-text">{{info.section_text}}</div>
+    </div>
   </div>
-
-
+  <div class="column">
+    <div class="house">Gregory College House</div>
+    <div class="brochure-title">Film Culture Program</div>
+    <div class="brochure-subtitle">{{schedule.semester}} Schedule</div>
+    <div *ngFor="let role of schedule.personnel">
+      <div class="position">{{role.position}}</div>
+      <div *ngFor="let person of role.people" class="person">{{person}}</div>
+    </div>
+    <div class="revision">{{revision}}</div>
+  </div>
 </div>

@@ -1,0 +1,52 @@
+@import './google-colors';
+
+
+.container {
+  display: table;
+  width: 100%;
+
+  .section {
+    background-color: rgba($google-grey-100, 0.5);
+    margin: 0.5em;
+    padding: 0.5em;
+
+    .title {
+
+    }
+
+    .remove-btn {
+      display: inline-block;
+      float: right;
+      background-color: $google-red;
+      padding: 0.3em 0.5em 0.4em;
+      color: #FFFFFF;
+      border-radius: 10%;
+      cursor: pointer;
+    }
+
+    .text {
+      display: block;
+      resize: none;
+      width: 100%;
+      min-height: 1em;
+      font-family: 'Roboto Mono';
+      font-size: 0.125in;
+      transition: background-color 100ms;
+      background-color: $google-grey-100;
+      &:focus {
+        background-color: $google-grey-300;
+      }
+    }
+  }
+
+  .insert-btn {
+    display: inline-block;
+    font-family: 'Roboto Mono';
+    border-radius: 0.2em;
+    padding: 0.3em 0.5em 0.4em;
+    margin-left: 0.5em;
+    background-color: $google-green;
+    color: #FFFFFF;
+    cursor: pointer;
+  }
+}

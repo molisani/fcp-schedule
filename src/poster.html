@@ -8,17 +8,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" href="./reset.css">
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Oswald:300,400,700|Roboto+Condensed:300,700|Roboto+Mono|Roboto+Slab|Roboto:400,500">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
-  <brochure-renderer></brochure-renderer>
+  <poster-renderer></poster-renderer>
   <script src="vendor/es6-shim/es6-shim.js"></script>
   <script src="vendor/reflect-metadata/Reflect.js"></script>
   <script src="vendor/systemjs/dist/system.src.js"></script>
   <script src="vendor/zone.js/dist/zone.js"></script>
   <script>
     System.import('system-config.js').then(function () {
-      System.import('brochure.js');
+      System.import('poster.js');
     }).catch(console.error.bind(console));
   </script>
 </body>

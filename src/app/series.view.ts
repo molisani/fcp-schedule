@@ -28,7 +28,7 @@ export interface Series {
         <span>Curated By: </span>
         <input type="text" [(ngModel)]="series.curator">
       </div>
-      <screening-view *ngFor="let screening of series.screenings" [screening]="screening"></screening-view>
+      <screening-view *ngFor="let screening of series.screenings" [series]="series" [screening]="screening"></screening-view>
     </div>
   `
 })
@@ -42,6 +42,10 @@ export class SeriesView {
 
   }
   setWeekday(weekday: string) {
-    this.series.weekday = weekday;
+    if (this.series.weekday === weekday) {
+      this.series.weekday = null;
+    } else {
+      this.series.weekday = weekday;
+    }
   }
 }

@@ -11,14 +11,9 @@ $scale: 10.3 / 11;
 $page-width: 11in * $scale;
 $page-height: 8.5in * $scale;
 
-.page {
-  width: $page-width;
-  height: $page-height;
-  background-color: $google-green-300;
-}
-
 .column {
   display: inline-block;
+  position: relative;
   height: $page-height - (2 * $v-margin);
   padding: $v-margin $h-margin;
   vertical-align: top;
@@ -69,6 +64,7 @@ $page-height: 8.5in * $scale;
         }
         .year {
           display: inline-block;
+          vertical-align: text-bottom;
           font-size: 0.15in;
           font-family: 'Roboto Condensed';
           padding-left: 0.075in;
@@ -86,10 +82,68 @@ $page-height: 8.5in * $scale;
           padding-left: 0.25in;
           text-align: right;
           margin-top: -0.15in;
-          color: $google-grey-500;
+          color: $google-grey;
         }
       }
     }
+  }
+
+  .section-title {
+    font-family: 'Oswald';
+    font-size: 0.25in;
+    margin-bottom: 0.1in;
+  }
+
+  .section-text {
+    font-family: 'Roboto';
+    font-size: 0.125in;
+    line-height: 0.2in;
+    text-align: justify;
+    margin-bottom: 0.15in;
+  }
+
+  .house {
+    font-family: 'Oswald';
+    font-size: 0.225in;
+    float: right;
+  }
+
+  .brochure-title {
+    margin-top: 0.5in;
+    font-family: 'Roboto';
+    font-size: 0.75in;
+    font-weight: 600;
+    line-height: 0.65in;
+  }
+
+  .brochure-subtitle {
+    margin-top: 0.15in;
+    margin-bottom: 0.5in;
+    font-family: 'Roboto Condensed';
+    font-size: 0.3in;
+  }
+
+  .position {
+    font-family: 'Roboto Condensed';
+    font-size: 0.2in;
+    font-weight: bold;
+    margin-top: 0.25in;
+  }
+
+  .person {
+    font-family: 'Roboto Condensed';
+    font-size: 0.25in;
+    text-align: right;
+  }
+
+  .revision {
+    position: absolute;
+    bottom: 0.3in;
+    right: 0.3in;
+    font-family: 'Roboto Mono';
+    font-size: 0.1in;
+    text-align: right;
+    color: $google-grey;
   }
 }
 
