@@ -4,6 +4,7 @@ import { environment } from './app/';
 import { Schedule } from './app/schedule.view';
 
 const ipcRenderer = window['require'] ? (<any>window).require('electron').ipcRenderer : null;
+const remote = window['require'] ? (<any>window).require('electron').remote : null;
 
 if (environment.production) {
   enableProdMode();
@@ -28,6 +29,20 @@ export class BrochureRenderer implements OnInit, AfterViewChecked {
         this.schedule = schedule;
         this.finishedUpdating = true;
       });
+    });
+    ipcRenderer.on('+view:debug-enabled', () => {
+      let rightClick: { x: number, y: number } = null;
+      let menu = new remote.Menu();
+      let menuItem = new remote.MenuItem({
+        label: 'Inspect Element',
+        click: () => { remote.getCurrentWindow().webContents.inspectElement(rightClick.x, rightClick.y); }
+      });
+      menu.append(menuItem);
+      window.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        rightClick = { x: e.x, y: e.y };
+        menu.popup(remote.getCurrentWindow());
+      })
     });
   }
   ngOnInit() {

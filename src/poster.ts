@@ -6,6 +6,7 @@ import { Screening } from './app/screening.view';
 
 const ipcRenderer = window['require'] ? (<any>window).require('electron').ipcRenderer : null;
 const webFrame = window['require'] ? (<any>window).require('electron').webFrame : null;
+const remote = window['require'] ? (<any>window).require('electron').remote : null;
 
 if (environment.production) {
   enableProdMode();
@@ -39,6 +40,20 @@ export class PosterRenderer implements OnInit, AfterViewChecked {
   private screenings: Screening[];
   private finishedUpdating = false;
   constructor(zone: NgZone) {
+    ipcRenderer.on('+view:debug-enabled', () => {
+      let rightClick: { x: number, y: number } = null;
+      let menu = new remote.Menu();
+      let menuItem = new remote.MenuItem({
+        label: 'Inspect Element',
+        click: () => { remote.getCurrentWindow().webContents.inspectElement(rightClick.x, rightClick.y); }
+      });
+      menu.append(menuItem);
+      window.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        rightClick = { x: e.x, y: e.y };
+        menu.popup(remote.getCurrentWindow());
+      })
+    });
     ipcRenderer.on('+view:open-schedule', (event: any, schedule: Schedule, month: number) => {
       zone.run(() => {
         this.month_str = MONTHS[month];

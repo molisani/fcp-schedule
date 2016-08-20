@@ -1,6 +1,5 @@
 import { app, BrowserWindow, ipcMain, Menu, MenuItem, dialog } from 'electron';
 
-import * as os from 'os';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -12,6 +11,8 @@ let mainWindow: Electron.BrowserWindow;
 let save: Electron.MenuItem;
 let currentFile: string;
 
+let debug = process.argv.indexOf('--debug') > -1;
+let startFile = process.argv.find((arg) => arg.endsWith('.json'));
 
 function createNewSchedule() {
   let schedule: Schedule = { semester: '', series: [] };
@@ -20,20 +21,24 @@ function createNewSchedule() {
   currentFile = undefined;
 };
 
-function openScheduleFromFile(window: Electron.BrowserWindow) {
+function openScheduleFromFile(file: string) {
+  fs.readFile(file, 'utf8', (err, data) => {
+    if (err) throw err;
+    let schedule = JSON.parse(data);
+    mainWindow.webContents.send('+view:open-schedule', schedule);
+    save.enabled = true;
+    currentFile = file;
+  });
+}
+
+function openScheduleFileDialog() {
   if (window) {
-    dialog.showOpenDialog(window, {
+    dialog.showOpenDialog(mainWindow, {
       filters: [{ name: 'Schedules', extensions: ['json']}],
       properties: ['openFile'],
     }, (filenames: string[]) => {
       if (filenames && filenames[0]) {
-        fs.readFile(filenames[0], 'utf8', (err, data) => {
-          if (err) throw err;
-          let schedule = JSON.parse(data);
-          mainWindow.webContents.send('+view:open-schedule', schedule);
-          save.enabled = true;
-          currentFile = filenames[0];
-        });
+        openScheduleFromFile(filenames[0]);
       }
     });
   }
@@ -51,7 +56,7 @@ function createMenu(): Electron.Menu {
   let open = new MenuItem({
     label: 'Open',
     accelerator: 'CmdOrCtrl+O',
-    click(item, focusedWindow) { openScheduleFromFile(focusedWindow); }
+    click(item, focusedWindow) { openScheduleFileDialog(); }
   });
   scheduleMenu.append(open);
   let merge = new MenuItem({
@@ -208,8 +213,10 @@ function getCurrentSchedule(callback: (schedule: Schedule) => void) {
 }
 
 function createWindow() {
-  mainWindow = new BrowserWindow({height: 650, width: 900, show: false});
-  //mainWindow.webContents.openDevTools();
+  mainWindow = new BrowserWindow({height: 650, width: 900, show: debug});
+  if (debug) {
+    mainWindow.webContents.openDevTools();
+  }
   mainWindow.loadURL(`file://${__dirname}/index.html`);
   if (process.platform === 'darwin') {
     Menu.setApplicationMenu(createMenu());
@@ -217,14 +224,19 @@ function createWindow() {
     mainWindow.setMenu(createMenu());
   }
   ipcMain.once('+main:angular-up', () => {
+    if (debug) {
+      mainWindow.webContents.send('+view:debug-enabled');
+    }
+    if (startFile) {
+      openScheduleFromFile(startFile);
+    }
     mainWindow.show();
-    // mainWindow.maximize();
   });
   ipcMain.on('+main:new-schedule', () => {
     createNewSchedule();
   });
   ipcMain.on('+main:open-schedule', () => {
-    openScheduleFromFile(mainWindow);
+    openScheduleFileDialog();
   });
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -263,10 +275,16 @@ const posterPrintingSetting = {
 
 function renderPoster(filename: string, month: number) {
   getCurrentSchedule((schedule) => {
-    let posterWindow = new BrowserWindow({width: 795, height: 800, show: false});
+    let posterWindow = new BrowserWindow({width: 795, height: 800, show: debug});
+    if (debug) {
+      posterWindow.webContents.openDevTools();
+    }
     posterWindow.setMenu(null);
     posterWindow.loadURL(`file://${__dirname}/poster.html`);
     ipcMain.once('+main:poster-angular-up', () => {
+      if (debug) {
+        posterWindow.webContents.send('+view:debug-enabled');
+      }
       posterWindow.webContents.send('+view:open-schedule', schedule, month);
     });
     ipcMain.once('+main:poster-ready', () => {
@@ -281,7 +299,9 @@ function renderPoster(filename: string, month: number) {
             message: 'Poster rendered and saved to file.',
             buttons: ['OK'],
           });
-          posterWindow.close();
+          if (!debug) {
+            posterWindow.close();
+          }
         });
       });
     });
@@ -290,10 +310,16 @@ function renderPoster(filename: string, month: number) {
 
 function renderBrochure(filename: string) {
   getCurrentSchedule((schedule) => {
-    let brochureWindow = new BrowserWindow({height: 777, width: 1022, show: false});
+    let brochureWindow = new BrowserWindow({height: 777, width: 1022, show: debug});
+    if (debug) {
+      brochureWindow.webContents.openDevTools();
+    }
     brochureWindow.setMenu(null);
     brochureWindow.loadURL(`file://${__dirname}/brochure.html`);
     ipcMain.once('+main:brochure-angular-up', () => {
+      if (debug) {
+        brochureWindow.webContents.send('+view:debug-enabled');
+      }
       brochureWindow.webContents.send('+view:open-schedule', schedule);
     });
     ipcMain.once('+main:brochure-ready', () => {
@@ -314,7 +340,9 @@ function renderBrochure(filename: string) {
             message: 'Brochure rendered and saved to file.',
             buttons: ['OK'],
           });
-          brochureWindow.close();
+          if (!debug) {
+            brochureWindow.close();
+          }
         });
       });
     });

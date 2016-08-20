@@ -7,6 +7,7 @@ import { ProgramInfoView } from './program-info.view';
 import { PersonnelView } from './personnel.view';
 
 const ipcRenderer = window['require'] ? (<any>window).require('electron').ipcRenderer : null;
+const remote = window['require'] ? (<any>window).require('electron').remote : null;
 
 export interface Schedule {
   semester: string;
@@ -70,6 +71,20 @@ export class ScheduleView implements OnInit {
     });
     ipcRenderer.on('+view:request-schedule', (event: any) => {
       ipcRenderer.send('+main:get-schedule', this.schedule);
+    });
+    ipcRenderer.on('+view:debug-enabled', () => {
+      let rightClick: { x: number, y: number } = null;
+      let menu = new remote.Menu();
+      let menuItem = new remote.MenuItem({
+        label: 'Inspect Element',
+        click: () => { remote.getCurrentWindow().webContents.inspectElement(rightClick.x, rightClick.y); }
+      });
+      menu.append(menuItem);
+      window.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        rightClick = { x: e.x, y: e.y };
+        menu.popup(remote.getCurrentWindow());
+      })
     });
   }
   ngOnInit() {

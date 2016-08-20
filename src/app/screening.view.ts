@@ -54,6 +54,7 @@ export interface Screening {
         <img *ngIf="screening.film.posterURL" src="{{screening.film.posterURL}}">
       </div>
       <div class="auto-fill-btn" (click)="autoFill()">auto-fill</div>
+      <div class="remove-btn" (click)="remove()">remove</div>
     </div>
   `
 })
@@ -61,9 +62,6 @@ export class ScreeningView {
   @Input() private series: Series;
   @Input() private screening: Screening;
   constructor(private movieSearch: MovieSearchService) {
-
-  }
-  ngOnInit() {
 
   }
   autoFill() {
@@ -92,5 +90,8 @@ export class ScreeningView {
       case 11: month = 'December'; break;
     }
     this.screening.date = `${month} ${tempDate.getDate()}`;
+  }
+  remove() {
+    this.series.screenings.splice(this.series.screenings.indexOf(this.screening), 1);
   }
 }

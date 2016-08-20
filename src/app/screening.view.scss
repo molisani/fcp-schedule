@@ -115,9 +115,23 @@
 
   .auto-fill-btn {
     display: inline-block;
-    bottom: 0.7vw;
+    bottom: 0.4em;
     position: absolute;
     background-color: $google-light-blue-500;
+    border-radius: 0.3em;
+    padding: 0.3em 0.6em;
+    font-size: 1em;
+    font-family: 'Roboto Mono';
+    color: white;
+    cursor: pointer;
+  }
+
+  .remove-btn {
+    display: inline-block;
+    left: 7.5em;
+    bottom: 0.4em;
+    position: absolute;
+    background-color: $google-red-500;
     border-radius: 0.3em;
     padding: 0.3em 0.6em;
     font-size: 1em;

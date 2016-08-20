@@ -28,6 +28,7 @@ export interface Series {
         <span>Curated By: </span>
         <input type="text" [(ngModel)]="series.curator">
       </div>
+      <div class="insert-btn" (click)="insertNewScreening()">+ Insert New Screening</div>
       <screening-view *ngFor="let screening of series.screenings" [series]="series" [screening]="screening"></screening-view>
     </div>
   `
@@ -47,5 +48,21 @@ export class SeriesView {
     } else {
       this.series.weekday = weekday;
     }
+  }
+
+  insertNewScreening() {
+    this.series.screenings.push({
+      film: {
+        title: '',
+        year: 2000,
+        runtime: 120,
+        director: '',
+        posterURL: '',
+      },
+      date: '',
+      time: '20:00',
+      credit: false,
+      classic: false
+    });
   }
 }
